@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TumLinks</title>
-    <meta name="description" content="TumLinks: Acelerador de URLs avanzado para enlaces más rápidos y eficientes">
-    <meta name="keywords" content="acortador URL, enlaces rápidos, acelerador enlaces, compresión URL">
+    <meta name="description" content="TumLinks: Plataforma premium de aceleración de URLs con tecnología avanzada y analytics en tiempo real">
+    <meta name="keywords" content="acortador URL, enlaces rápidos, acelerador enlaces, compresión URL, marketing digital">
     <meta name="robots" content="index, follow">
     <link rel="icon" type="image/jpeg" href="https://github.com/ESTADUS/tumlinks/raw/refs/heads/main/logo.jpeg">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -17,35 +17,44 @@
     <div class="modal-overlay" id="modeModal">
         <div class="modal-content" role="dialog" aria-labelledby="modeTitle" aria-describedby="modeDesc">
             <div class="logo">
-                <img src="https://github.com/ESTADUS/tumlinks/raw/refs/heads/main/logo.jpeg" alt="TumLinks Logo" width="50" height="50">
+                <img src="https://github.com/ESTADUS/tumlinks/raw/refs/heads/main/logo.jpeg" alt="TumLinks Logo" width="60" height="60">
                 <h1 id="modeTitle">TumLinks</h1>
             </div>
-            <p class="modal-text" id="modeDesc">Selecciona tu modo de uso</p>
+            <p class="modal-text" id="modeDesc">Selecciona tu experiencia preferida</p>
             
             <div class="mode-selector">
                 <button class="mode-btn" id="freeModeSelect" data-mode="free">
                     <i class="fas fa-user"></i> 
-                    <div class="mode-title">Modo Gratuito</div>
-                    <div class="mode-desc">5 enlaces por día</div>
+                    <div class="mode-title">Plan Básico</div>
+                    <div class="mode-desc">Ideal para uso personal</div>
                 </button>
                 <button class="mode-btn premium" id="premiumModeSelect" data-mode="premium">
                     <i class="fas fa-crown"></i>
-                    <div class="mode-title">Modo Premium</div>
-                    <div class="mode-desc">Enlaces ilimitados + QR</div>
+                    <div class="mode-title">Plan Premium</div>
+                    <div class="mode-desc">Ideal para profesionales</div>
                 </button>
             </div>
             
             <div class="captcha-container" id="captchaSection">
-                <div class="captcha-text" id="captchaText" aria-label="Código CAPTCHA">ABCD12</div>
-                <input type="text" class="captcha-input" id="captchaInput" placeholder="Ingrese el código" maxlength="6" aria-required="true">
-                <div class="error-message" id="captchaError" role="alert">Código incorrecto. Intente nuevamente.</div>
+                <div class="security-header">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Verificación de Seguridad</span>
+                </div>
+                <div class="captcha-text" id="captchaText" aria-label="Código de verificación CAPTCHA">ABCD12</div>
+                <input type="text" class="captcha-input" id="captchaInput" placeholder="Ingrese el código de verificación" maxlength="6" aria-required="true">
+                <div class="error-message" id="captchaError" role="alert">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Código incorrecto. Por favor, intente nuevamente.
+                </div>
                 
                 <div class="captcha-actions">
-                    <button class="btn btn-secondary" id="refreshCaptcha" aria-label="Generar nuevo código CAPTCHA">
-                        <i class="fas fa-redo" aria-hidden="true"></i> Actualizar
+                    <button class="btn btn-secondary" id="refreshCaptcha" aria-label="Generar nuevo código de verificación">
+                        <i class="fas fa-redo" aria-hidden="true"></i> 
+                        <span>Regenerar Código</span>
                     </button>
-                    <button class="btn" id="verifyCaptcha">
-                        <i class="fas fa-check" aria-hidden="true"></i> Continuar
+                    <button class="btn btn-primary" id="verifyCaptcha">
+                        <i class="fas fa-check" aria-hidden="true"></i> 
+                        <span>Verificar y Continuar</span>
                     </button>
                 </div>
             </div>
@@ -57,19 +66,41 @@
             <div class="modal-icon" aria-hidden="true">
                 <i class="fas fa-crown"></i>
             </div>
-            <h2 class="modal-title" id="premiumTitle">Modo Premium</h2>
-            <p class="modal-text">Para acceder al modo premium, registra tu número de teléfono</p>
+            <h2 class="modal-title" id="premiumTitle">Activación Premium</h2>
+            <p class="modal-text">Desbloquea todas las funciones avanzadas registrando tu número autorizado</p>
             
             <div class="form-group">
-                <input type="tel" id="phoneInput" placeholder="+34 123 456 789" required>
+                <label for="phoneInput" class="input-label">
+                    <i class="fas fa-mobile-alt"></i>
+                    Número de Teléfono Autorizado
+                </label>
+                <input type="tel" id="phoneInput" placeholder="+34 123 456 789" required class="phone-input">
+                <div class="input-hint">Formato internacional requerido</div>
+            </div>
+            
+            <div class="premium-benefits">
+                <div class="benefit-item">
+                    <i class="fas fa-infinity"></i>
+                    <span>Enlaces Ilimitados</span>
+                </div>
+                <div class="benefit-item">
+                    <i class="fas fa-qrcode"></i>
+                    <span>Códigos QR Dinámicos</span>
+                </div>
+                <div class="benefit-item">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Analytics Avanzados</span>
+                </div>
             </div>
             
             <div class="captcha-actions">
                 <button class="btn btn-secondary" id="cancelPremium">
-                    <i class="fas fa-times" aria-hidden="true"></i> Cancelar
+                    <i class="fas fa-times" aria-hidden="true"></i> 
+                    <span>Volver</span>
                 </button>
                 <button class="btn btn-premium" id="activatePremium">
-                    <i class="fas fa-check" aria-hidden="true"></i> Activar Premium
+                    <i class="fas fa-check" aria-hidden="true"></i> 
+                    <span>Activar Premium</span>
                 </button>
             </div>
         </div>
@@ -78,184 +109,343 @@
     <div class="container" id="freeContainer" style="display: none;">
         <header class="header" role="banner">
             <div class="logo">
-                <img src="https://github.com/ESTADUS/tumlinks/raw/refs/heads/main/logo.jpeg" alt="TumLinks Logo" width="40" height="40">
-                <h1>TumLinks</h1>
+                <img src="https://github.com/ESTADUS/tumlinks/raw/refs/heads/main/logo.jpeg" alt="TumLinks Logo" width="48" height="48">
+                <div class="header-text">
+                    <h1>TumLinks</h1>
+                    <p class="subtitle">Acelerador de URLs - Plan Básico</p>
+                </div>
             </div>
-            <p class="subtitle">Acelerador de URLs - Modo Gratuito</p>
+            <div class="header-actions">
+                <button class="btn btn-outline" id="switchModeFree">
+                    <i class="fas fa-sync-alt"></i>
+                    Cambiar Plan
+                </button>
+            </div>
         </header>
 
         <main class="main-content" id="freeContent" role="main" tabindex="-1">
             <section class="card" aria-labelledby="shortenTitle">
-                <h2 class="card-title" id="shortenTitle">
-                    <i class="fas fa-rocket" aria-hidden="true"></i> 
-                    Acelerar URL
-                    <span class="analytics-badge">GRATUITO</span>
-                </h2>
-                
-                <div class="limit-counter" id="limitCounter">
-                    <i class="fas fa-info-circle"></i>
-                    Límite: <span id="linksToday">0</span>/5 enlaces hoy
+                <div class="card-header">
+                    <h2 class="card-title" id="shortenTitle">
+                        <i class="fas fa-bolt" aria-hidden="true"></i> 
+                        Acelerar URL
+                    </h2>
+                    <span class="analytics-badge">PLAN BÁSICO</span>
                 </div>
                 
-                <form id="shorten-form-free" role="form">
+                <div class="usage-counter">
+                    <div class="counter-header">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>Uso Diario</span>
+                    </div>
+                    <div class="counter-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill"></div>
+                        </div>
+                        <div class="counter-text">
+                            <span id="linksToday">0</span>/5 enlaces utilizados
+                        </div>
+                    </div>
+                </div>
+                
+                <form id="shorten-form-free" role="form" class="shorten-form">
                     <div class="form-group">
-                        <label for="url-input-free">URL para acelerar</label>
-                        <input type="url" id="url-input-free" placeholder="https://ejemplo.com/ruta-extremadamente-larga" required aria-required="true">
+                        <label for="url-input-free" class="input-label">
+                            <i class="fas fa-link"></i>
+                            URL para Acelerar
+                        </label>
+                        <input type="url" id="url-input-free" placeholder="https://ejemplo.com/ruta-extremadamente-larga-que-necesita-acortarse" required aria-required="true" class="url-input">
                     </div>
                     
-                    <button type="submit" class="btn btn-block" id="submitBtnFree">
-                        <i class="fas fa-bolt" aria-hidden="true"></i> Acelerar URL
+                    <button type="submit" class="btn btn-primary btn-block" id="submitBtnFree">
+                        <i class="fas fa-rocket" aria-hidden="true"></i> 
+                        <span class="btn-text">Acelerar URL</span>
+                        <div class="btn-loading" aria-hidden="true"></div>
                     </button>
                 </form>
 
-                <div class="loading" id="loadingFree" aria-live="polite" aria-label="Procesando solicitud">
-                    <div class="spinner" aria-hidden="true"></div>
-                    <p>Optimizando enlace...</p>
+                <div class="loading-state" id="loadingFree" aria-live="polite" aria-label="Procesando solicitud de aceleración">
+                    <div class="loading-content">
+                        <div class="spinner" aria-hidden="true"></div>
+                        <div class="loading-text">
+                            <p class="loading-title">Optimizando Enlace</p>
+                            <p class="loading-desc">Procesando y comprimiendo URL para máxima velocidad</p>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="result-container" id="result-container-free" role="status" aria-live="polite">
-                    <div class="result-title">
-                        <i class="fas fa-check-circle" aria-hidden="true"></i> URL Acelerada
+                    <div class="result-header">
+                        <div class="result-title">
+                            <i class="fas fa-check-circle" aria-hidden="true"></i> 
+                            <span>URL Acelerada con Éxito</span>
+                        </div>
+                        <div class="result-badge">
+                            <i class="fas fa-bolt"></i>
+                            ACTIVA
+                        </div>
                     </div>
+                    
                     <div class="result-url">
-                        <input type="text" id="short-url-free" readonly aria-label="URL acelerada">
-                        <button class="btn" id="copy-btn-free" aria-label="Copiar URL al portapapeles">
+                        <input type="text" id="short-url-free" readonly aria-label="URL acelerada generada" class="result-input">
+                        <button class="btn btn-success" id="copy-btn-free" aria-label="Copiar URL acelerada al portapapeles">
                             <i class="fas fa-copy" aria-hidden="true"></i>
+                            <span>Copiar</span>
                         </button>
                     </div>
+                    
                     <div class="link-stats">
-                        <div class="stat">
+                        <div class="stat-item">
                             <i class="fas fa-calendar" aria-hidden="true"></i>
-                            <span id="created-date-free">Ahora</span>
+                            <div class="stat-info">
+                                <span class="stat-label">Creado</span>
+                                <span class="stat-value" id="created-date-free">Hace unos segundos</span>
+                            </div>
                         </div>
-                        <div class="analytics-badge">
-                            <i class="fas fa-chart-line" aria-hidden="true"></i>
-                            ACTIVO
+                        <div class="stat-item">
+                            <i class="fas fa-clock" aria-hidden="true"></i>
+                            <div class="stat-info">
+                                <span class="stat-label">Velocidad</span>
+                                <span class="stat-value">+300% más rápido</span>
+                            </div>
                         </div>
                     </div>
                 </div>
             </section>
             
-            <div class="card premium-promo">
-                <h3 class="card-title">
-                    <i class="fas fa-crown"></i> ¿Necesitas más?
-                </h3>
-                <p>Actualiza a Premium para obtener enlaces ilimitados, códigos QR y estadísticas avanzadas.</p>
+            <section class="card premium-promo">
+                <div class="promo-header">
+                    <i class="fas fa-crown"></i>
+                    <h3>¿Listo para el Siguiente Nivel?</h3>
+                </div>
+                <p class="promo-text">Desbloquea el poder completo de TumLinks con nuestro Plan Premium</p>
+                
+                <div class="promo-features">
+                    <div class="promo-feature">
+                        <i class="fas fa-infinity"></i>
+                        <span>Enlaces Ilimitados</span>
+                    </div>
+                    <div class="promo-feature">
+                        <i class="fas fa-qrcode"></i>
+                        <span>Generador QR Avanzado</span>
+                    </div>
+                    <div class="promo-feature">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Analytics en Tiempo Real</span>
+                    </div>
+                </div>
+                
                 <button class="btn btn-premium btn-block" id="upgradeToPremium">
-                    <i class="fas fa-crown"></i> Actualizar a Premium
+                    <i class="fas fa-crown"></i> 
+                    <span>Actualizar a Premium</span>
                 </button>
-            </div>
+            </section>
         </main>
     </div>
 
     <div class="container" id="premiumContainer" style="display: none;">
         <header class="header" role="banner">
             <div class="logo">
-                <img src="https://github.com/ESTADUS/tumlinks/raw/refs/heads/main/logo.jpeg" alt="TumLinks Logo" width="40" height="40">
-                <h1>TumLinks</h1>
+                <img src="https://github.com/ESTADUS/tumlinks/raw/refs/heads/main/logo.jpeg" alt="TumLinks Logo" width="48" height="48">
+                <div class="header-text">
+                    <h1>TumLinks</h1>
+                    <p class="subtitle">Acelerador de URLs - Plan Premium</p>
+                </div>
             </div>
-            <p class="subtitle">Acelerador de URLs - Modo Premium</p>
+            <div class="header-actions">
+                <button class="btn btn-outline" id="switchModePremium">
+                    <i class="fas fa-sync-alt"></i>
+                    Cambiar Plan
+                </button>
+            </div>
         </header>
 
         <main class="main-content" id="premiumContent" role="main" tabindex="-1">
-            <section class="card" aria-labelledby="shortenTitlePremium">
-                <h2 class="card-title" id="shortenTitlePremium">
-                    <i class="fas fa-rocket" aria-hidden="true"></i> 
-                    Acelerar URL
-                    <span class="analytics-badge premium-badge">PREMIUM</span>
-                </h2>
-                
-                <div class="premium-features">
-                    <strong><i class="fas fa-crown"></i> Beneficios Premium:</strong>
-                    <ul class="feature-list">
-                        <li><i class="fas fa-check"></i> Enlaces ilimitados</li>
-                        <li><i class="fas fa-check"></i> Códigos QR</li>
-                        <li><i class="fas fa-check"></i> Personalización completa</li>
-                        <li><i class="fas fa-check"></i> Estadísticas avanzadas</li>
-                    </ul>
+            <section class="card premium-feature-card" aria-labelledby="shortenTitlePremium">
+                <div class="card-header">
+                    <h2 class="card-title" id="shortenTitlePremium">
+                        <i class="fas fa-bolt" aria-hidden="true"></i> 
+                        Acelerador Avanzado
+                    </h2>
+                    <span class="analytics-badge premium-badge">
+                        <i class="fas fa-crown"></i>
+                        PLAN PREMIUM
+                    </span>
                 </div>
                 
-                <form id="shorten-form-premium" role="form">
+                <div class="premium-benefits-bar">
+                    <div class="benefit-tag">
+                        <i class="fas fa-infinity"></i>
+                        Enlaces Ilimitados
+                    </div>
+                    <div class="benefit-tag">
+                        <i class="fas fa-rocket"></i>
+                        Máxima Velocidad
+                    </div>
+                    <div class="benefit-tag">
+                        <i class="fas fa-shield-alt"></i>
+                        Seguridad Avanzada
+                    </div>
+                </div>
+                
+                <form id="shorten-form-premium" role="form" class="shorten-form">
                     <div class="form-group">
-                        <label for="url-input-premium">URL para acelerar</label>
-                        <input type="url" id="url-input-premium" placeholder="https://ejemplo.com/ruta-extremadamente-larga" required aria-required="true">
+                        <label for="url-input-premium" class="input-label">
+                            <i class="fas fa-link"></i>
+                            URL de Destino
+                        </label>
+                        <input type="url" id="url-input-premium" placeholder="https://ejemplo.com/ruta-extremadamente-larga-que-necesita-acortarse" required aria-required="true" class="url-input">
                     </div>
                     
-                    <div class="form-group">
-                        <label for="custom-alias-premium">Alias personalizado (opcional)</label>
-                        <input type="text" id="custom-alias-premium" placeholder="mi-enlace" aria-describedby="aliasHelp">
-                        <div id="aliasHelp" class="sr-only">Si se deja vacío, se generará un código automáticamente</div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="custom-alias-premium" class="input-label">
+                                <i class="fas fa-tag"></i>
+                                Alias Personalizado
+                            </label>
+                            <input type="text" id="custom-alias-premium" placeholder="mi-enlace-especial" aria-describedby="aliasHelp" class="alias-input">
+                            <div id="aliasHelp" class="input-hint">Opcional - Se generará automáticamente si se deja vacío</div>
+                        </div>
                     </div>
                     
-                    <div class="form-group">
-                        <label class="checkbox-label">
+                    <div class="form-options">
+                        <label class="checkbox-label premium-option">
                             <input type="checkbox" id="generateQR">
                             <span class="checkmark"></span>
-                            Generar código QR
+                            <div class="option-content">
+                                <i class="fas fa-qrcode"></i>
+                                <span>Generar Código QR Avanzado</span>
+                                <small>Incluye branding y analytics</small>
+                            </div>
                         </label>
                     </div>
                     
-                    <button type="submit" class="btn btn-block btn-premium" id="submitBtnPremium">
-                        <i class="fas fa-bolt" aria-hidden="true"></i> Acelerar URL
+                    <button type="submit" class="btn btn-premium btn-block" id="submitBtnPremium">
+                        <i class="fas fa-rocket" aria-hidden="true"></i> 
+                        <span class="btn-text">Acelerar URL Premium</span>
+                        <div class="btn-loading" aria-hidden="true"></div>
                     </button>
                 </form>
 
-                <div class="loading" id="loadingPremium" aria-live="polite" aria-label="Procesando solicitud">
-                    <div class="spinner" aria-hidden="true"></div>
-                    <p>Optimizando enlace...</p>
+                <div class="loading-state" id="loadingPremium" aria-live="polite" aria-label="Procesando solicitud premium">
+                    <div class="loading-content">
+                        <div class="spinner premium-spinner" aria-hidden="true"></div>
+                        <div class="loading-text">
+                            <p class="loading-title">Optimización Premium en Progreso</p>
+                            <p class="loading-desc">Aplicando compresión avanzada y configuraciones de rendimiento</p>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="result-container" id="result-container-premium" role="status" aria-live="polite">
-                    <div class="result-title">
-                        <i class="fas fa-check-circle" aria-hidden="true"></i> URL Acelerada
+                <div class="result-container premium-result" id="result-container-premium" role="status" aria-live="polite">
+                    <div class="result-header">
+                        <div class="result-title">
+                            <i class="fas fa-check-circle" aria-hidden="true"></i> 
+                            <span>URL Premium Creada</span>
+                        </div>
+                        <div class="result-badge premium-badge">
+                            <i class="fas fa-crown"></i>
+                            PREMIUM
+                        </div>
                     </div>
+                    
                     <div class="result-url">
-                        <input type="text" id="short-url-premium" readonly aria-label="URL acelerada">
-                        <button class="btn" id="copy-btn-premium" aria-label="Copiar URL al portapapeles">
+                        <input type="text" id="short-url-premium" readonly aria-label="URL premium acelerada" class="result-input">
+                        <button class="btn btn-success" id="copy-btn-premium" aria-label="Copiar URL premium al portapapeles">
                             <i class="fas fa-copy" aria-hidden="true"></i>
+                            <span>Copiar</span>
                         </button>
                     </div>
                     
-                    <div id="qr-container" style="display: none; text-align: center; margin: 15px 0;">
-                        <canvas id="qr-code" width="150" height="150"></canvas>
-                        <p style="margin-top: 10px; font-size: 0.8rem; color: #64748b;">
-                            <i class="fas fa-qrcode"></i> Código QR generado
-                        </p>
+                    <div id="qr-container" class="qr-section">
+                        <div class="qr-header">
+                            <i class="fas fa-qrcode"></i>
+                            <span>Código QR Generado</span>
+                        </div>
+                        <canvas id="qr-code" width="200" height="200" aria-label="Código QR para la URL acelerada"></canvas>
+                        <div class="qr-actions">
+                            <button class="btn btn-outline" id="downloadQR">
+                                <i class="fas fa-download"></i>
+                                Descargar QR
+                            </button>
+                            <button class="btn btn-outline" id="shareQR">
+                                <i class="fas fa-share"></i>
+                                Compartir
+                            </button>
+                        </div>
                     </div>
                     
-                    <div class="link-stats">
-                        <div class="stat">
+                    <div class="link-stats premium-stats">
+                        <div class="stat-item">
                             <i class="fas fa-calendar" aria-hidden="true"></i>
-                            <span id="created-date-premium">Ahora</span>
+                            <div class="stat-info">
+                                <span class="stat-label">Creado</span>
+                                <span class="stat-value" id="created-date-premium">Hace unos segundos</span>
+                            </div>
                         </div>
-                        <div class="stat">
-                            <i class="fas fa-chart-bar" aria-hidden="true"></i>
-                            <span id="click-count-premium">0 clics</span>
-                        </div>
-                        <div class="analytics-badge premium-badge">
+                        <div class="stat-item">
                             <i class="fas fa-chart-line" aria-hidden="true"></i>
-                            ACTIVO
+                            <div class="stat-info">
+                                <span class="stat-label">Rendimiento</span>
+                                <span class="stat-value">+500% más rápido</span>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-eye" aria-hidden="true"></i>
+                            <div class="stat-info">
+                                <span class="stat-label">Estadísticas</span>
+                                <span class="stat-value" id="click-count-premium">Listo para tracking</span>
+                            </div>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <section class="card" aria-labelledby="recentLinksTitle">
-                <h2 class="card-title" id="recentLinksTitle">
-                    <i class="fas fa-history" aria-hidden="true"></i> Enlaces Recientes
-                </h2>
-                <div class="links-list" id="links-list-premium" role="list" aria-label="Lista de enlaces acelerados recientemente">
-                    <div class="empty-state" id="empty-state-premium">
-                        <i class="fas fa-link" aria-hidden="true"></i>
-                        <h3>Sin enlaces acelerados</h3>
-                        <p>Los enlaces que aceleres aparecerán aquí</p>
+            <section class="card analytics-card" aria-labelledby="recentLinksTitle">
+                <div class="card-header">
+                    <h2 class="card-title" id="recentLinksTitle">
+                        <i class="fas fa-history" aria-hidden="true"></i> 
+                        Enlaces Recientes
+                    </h2>
+                    <div class="analytics-summary">
+                        <span class="total-links" id="totalLinks">0 enlaces</span>
+                        <span class="total-clicks" id="totalClicks">0 clics</span>
+                    </div>
+                </div>
+                
+                <div class="links-list-container">
+                    <div class="list-header">
+                        <span>URL Original</span>
+                        <span>Enlace Acelerado</span>
+                        <span>Estadísticas</span>
+                        <span>Acciones</span>
+                    </div>
+                    
+                    <div class="links-list" id="links-list-premium" role="list" aria-label="Lista de enlaces premium acelerados">
+                        <div class="empty-state" id="empty-state-premium">
+                            <div class="empty-icon">
+                                <i class="fas fa-link" aria-hidden="true"></i>
+                            </div>
+                            <h3>Sin Enlaces Acelerados</h3>
+                            <p>Los enlaces premium que crees aparecerán aquí con analytics completos</p>
+                            <button class="btn btn-outline" onclick="document.getElementById('url-input-premium').focus()">
+                                <i class="fas fa-plus"></i>
+                                Crear Primer Enlace
+                            </button>
+                        </div>
                     </div>
                 </div>
             </section>
         </main>
     </div>
 
-    <div class="toast" id="toast" role="alert" aria-live="assertive">Enlace copiado al portapapeles</div>
+    <div class="toast" id="toast" role="alert" aria-live="assertive">
+        <div class="toast-content">
+            <i class="toast-icon"></i>
+            <span class="toast-message">Enlace copiado al portapapeles</span>
+        </div>
+        <div class="toast-progress"></div>
+    </div>
 
     <script src="script.js"></script>
 </body>
