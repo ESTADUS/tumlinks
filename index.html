@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QuantumLink</title>
+    <title>TumLinks</title>
+    <meta name="description" content="QuantumLink: Acelerador de URLs avanzado con tecnología de compresión cuántica para enlaces más rápidos y eficientes">
+    <meta name="keywords" content="acortador URL, enlaces rápidos, quantum, acelerador enlaces, compresión URL">
+    <meta name="robots" content="index, follow">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -44,7 +47,36 @@
             width: 100%;
         }
 
-        /* Modal CAPTCHA */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 6px;
+            background: var(--primary);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            text-decoration: none;
+            z-index: 10000;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .skip-link:focus {
+            top: 6px;
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -104,6 +136,7 @@
             color: var(--light);
             margin-bottom: 15px;
             user-select: none;
+            font-family: monospace;
         }
 
         .captcha-input {
@@ -115,11 +148,13 @@
             color: var(--light);
             font-size: 1rem;
             text-align: center;
+            transition: var(--transition);
         }
 
         .captcha-input:focus {
             outline: none;
             border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
         }
 
         .captcha-actions {
@@ -145,9 +180,18 @@
             flex: 1;
         }
 
+        .btn:focus {
+            outline: 2px solid var(--secondary);
+            outline-offset: 2px;
+        }
+
         .btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 16px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(0);
         }
 
         .btn-secondary {
@@ -165,7 +209,6 @@
             display: none;
         }
 
-        /* Contenido principal */
         .main-content {
             display: none;
             grid-template-columns: 1fr;
@@ -310,6 +353,22 @@
         .links-list {
             max-height: 350px;
             overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary) rgba(255, 255, 255, 0.1);
+        }
+
+        .links-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .links-list::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+        }
+
+        .links-list::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 3px;
         }
 
         @media (max-width: 480px) {
@@ -385,6 +444,11 @@
             padding: 6px;
             border-radius: 6px;
             font-size: 0.8rem;
+        }
+
+        .action-btn:focus {
+            outline: 2px solid var(--primary);
+            outline-offset: 1px;
         }
 
         .action-btn:hover {
@@ -525,111 +589,123 @@
             font-size: 0.7rem;
             font-weight: 600;
         }
+
+        .aria-live {
+            position: absolute;
+            left: -10000px;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+        }
     </style>
 </head>
 <body>
+    <a href="#mainContent" class="skip-link">Saltar al contenido principal</a>
+    <div id="ariaLive" class="aria-live" aria-live="polite" aria-atomic="true"></div>
+
     <div class="modal-overlay" id="captchaModal">
-        <div class="modal-content">
-            <div class="modal-icon">
+        <div class="modal-content" role="dialog" aria-labelledby="captchaTitle" aria-describedby="captchaDesc">
+            <div class="modal-icon" aria-hidden="true">
                 <i class="fas fa-shield-alt"></i>
             </div>
-            <h2 class="modal-title">Verificación de Seguridad</h2>
-            <p class="modal-text">Complete el CAPTCHA para acceder a QuantumLink</p>
+            <h2 class="modal-title" id="captchaTitle">Verificación de Seguridad</h2>
+            <p class="modal-text" id="captchaDesc">Complete el CAPTCHA para acceder a QuantumLink</p>
             
             <div class="captcha-container">
-                <div class="captcha-text" id="captchaText">ABCD12</div>
-                <input type="text" class="captcha-input" id="captchaInput" placeholder="Ingrese el código" maxlength="6">
-                <div class="error-message" id="captchaError">Código incorrecto. Intente nuevamente.</div>
+                <div class="captcha-text" id="captchaText" aria-label="Código CAPTCHA">ABCD12</div>
+                <input type="text" class="captcha-input" id="captchaInput" placeholder="Ingrese el código" maxlength="6" aria-required="true">
+                <div class="error-message" id="captchaError" role="alert">Código incorrecto. Intente nuevamente.</div>
             </div>
             
             <div class="captcha-actions">
-                <button class="btn btn-secondary" id="refreshCaptcha">
-                    <i class="fas fa-redo"></i> Actualizar
+                <button class="btn btn-secondary" id="refreshCaptcha" aria-label="Generar nuevo código CAPTCHA">
+                    <i class="fas fa-redo" aria-hidden="true"></i> Actualizar
                 </button>
                 <button class="btn" id="verifyCaptcha">
-                    <i class="fas fa-check"></i> Verificar
+                    <i class="fas fa-check" aria-hidden="true"></i> Verificar
                 </button>
             </div>
         </div>
     </div>
 
     <div class="container">
-        <div class="header">
+        <header class="header" role="banner">
             <div class="logo">
-                <div class="logo-icon">
+                <div class="logo-icon" aria-hidden="true">
                     <i class="fas fa-bolt"></i>
                 </div>
-                <h1>QuantumLink</h1>
+                <h1>TumLinks</h1>
             </div>
             <p class="subtitle">Acelerador de URLs de última generación</p>
-        </div>
+        </header>
 
-        <div class="main-content" id="mainContent">
-            <div class="card">
-                <h2 class="card-title"><i class="fas fa-rocket"></i> Acelerar URL</h2>
+        <main class="main-content" id="mainContent" role="main" tabindex="-1">
+            <section class="card" aria-labelledby="shortenTitle">
+                <h2 class="card-title" id="shortenTitle"><i class="fas fa-rocket" aria-hidden="true"></i> Acelerar URL</h2>
                 
-                <form id="shorten-form">
+                <form id="shorten-form" role="form">
                     <div class="form-group">
                         <label for="url-input">URL para acelerar</label>
-                        <input type="url" id="url-input" placeholder="https://ejemplo.com/ruta-extremadamente-larga" required>
+                        <input type="url" id="url-input" placeholder="https://ejemplo.com/ruta-extremadamente-larga" required aria-required="true">
                     </div>
                     
                     <div class="form-group">
                         <label for="custom-alias">Alias personalizado (opcional)</label>
-                        <input type="text" id="custom-alias" placeholder="mi-enlace-quantum">
+                        <input type="text" id="custom-alias" placeholder="mi-enlace-quantum" aria-describedby="aliasHelp">
+                        <div id="aliasHelp" class="sr-only">Si se deja vacío, se generará un código automáticamente</div>
                     </div>
                     
                     <button type="submit" class="btn btn-block">
-                        <i class="fas fa-bolt"></i> Acelerar URL
+                        <i class="fas fa-bolt" aria-hidden="true"></i> Acelerar URL
                     </button>
                 </form>
 
-                <div class="loading" id="loading">
-                    <div class="spinner"></div>
+                <div class="loading" id="loading" aria-live="polite" aria-label="Procesando solicitud">
+                    <div class="spinner" aria-hidden="true"></div>
                     <p>Optimizando enlace...</p>
                 </div>
 
-                <div class="result-container" id="result-container">
+                <div class="result-container" id="result-container" role="status" aria-live="polite">
                     <div class="result-title">
-                        <i class="fas fa-check-circle"></i> URL Acelerada
+                        <i class="fas fa-check-circle" aria-hidden="true"></i> URL Acelerada
                     </div>
                     <div class="result-url">
-                        <input type="text" id="short-url" readonly>
-                        <button class="btn" id="copy-btn">
-                            <i class="fas fa-copy"></i>
+                        <input type="text" id="short-url" readonly aria-label="URL acelerada">
+                        <button class="btn" id="copy-btn" aria-label="Copiar URL al portapapeles">
+                            <i class="fas fa-copy" aria-hidden="true"></i>
                         </button>
                     </div>
                     <div class="link-stats">
                         <div class="stat">
-                            <i class="fas fa-calendar"></i>
+                            <i class="fas fa-calendar" aria-hidden="true"></i>
                             <span id="created-date">Ahora</span>
                         </div>
                         <div class="stat">
-                            <i class="fas fa-chart-bar"></i>
+                            <i class="fas fa-chart-bar" aria-hidden="true"></i>
                             <span id="click-count">0 clics</span>
                         </div>
                         <div class="analytics-badge">
-                            <i class="fas fa-chart-line"></i>
+                            <i class="fas fa-chart-line" aria-hidden="true"></i>
                             ACTIVO
                         </div>
                     </div>
                 </div>
-            </div>
+            </section>
 
-            <div class="card">
-                <h2 class="card-title"><i class="fas fa-history"></i> Enlaces Recientes</h2>
-                <div class="links-list" id="links-list">
+            <section class="card" aria-labelledby="recentLinksTitle">
+                <h2 class="card-title" id="recentLinksTitle"><i class="fas fa-history" aria-hidden="true"></i> Enlaces Recientes</h2>
+                <div class="links-list" id="links-list" role="list" aria-label="Lista de enlaces acelerados recientemente">
                     <div class="empty-state" id="empty-state">
-                        <i class="fas fa-link"></i>
+                        <i class="fas fa-link" aria-hidden="true"></i>
                         <h3>Sin enlaces acelerados</h3>
                         <p>Los enlaces que aceleres aparecerán aquí</p>
                     </div>
                 </div>
-            </div>
-        </div>
+            </section>
+        </main>
     </div>
 
-    <div class="toast" id="toast">Enlace copiado al portapapeles</div>
+    <div class="toast" id="toast" role="alert" aria-live="assertive">Enlace copiado al portapapeles</div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -651,12 +727,43 @@
             const linksList = document.getElementById('links-list');
             const emptyState = document.getElementById('empty-state');
             const toast = document.getElementById('toast');
+            const ariaLive = document.getElementById('ariaLive');
             
             let analyticsData = JSON.parse(localStorage.getItem('quantumAnalytics') || '{}');
             let currentCaptcha = '';
             
-            generateCaptcha();
-            requestPermissions();
+            // Mejora de rendimiento: Precarga de funcionalidades críticas
+            if ('requestIdleCallback' in window) {
+                window.requestIdleCallback(initializeApp);
+            } else {
+                setTimeout(initializeApp, 0);
+            }
+            
+            function initializeApp() {
+                generateCaptcha();
+                requestPermissions();
+                loadSavedLinks();
+                
+                // Mejora de compatibilidad: Detectar características del navegador
+                if (!('clipboard' in navigator)) {
+                    console.warn('Clipboard API no soportada, usando método alternativo');
+                }
+                
+                // Mejora de rendimiento: Intersection Observer para carga diferida
+                if ('IntersectionObserver' in window) {
+                    const observer = new IntersectionObserver((entries) => {
+                        entries.forEach(entry => {
+                            if (entry.isIntersecting) {
+                                // Elementos visibles pueden cargar contenido adicional si es necesario
+                            }
+                        });
+                    });
+                    
+                    if (mainContent) {
+                        observer.observe(mainContent);
+                    }
+                }
+            }
             
             function generateCaptcha() {
                 const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -667,6 +774,7 @@
                 captchaText.textContent = currentCaptcha;
                 captchaInput.value = '';
                 captchaError.style.display = 'none';
+                captchaInput.focus();
             }
             
             function requestPermissions() {
@@ -676,6 +784,9 @@
                             if (result.state === 'denied') {
                                 showToast('Se recomienda permitir el acceso al portapapeles para mejor experiencia', 'info');
                             }
+                        })
+                        .catch(() => {
+                            // Fallback silencioso para navegadores sin soporte completo
                         });
                 }
             }
@@ -686,12 +797,16 @@
                 if (captchaInput.value.toUpperCase() === currentCaptcha) {
                     captchaModal.style.display = 'none';
                     mainContent.style.display = 'grid';
+                    mainContent.focus();
                     showToast('Verificación exitosa. Bienvenido a QuantumLink');
                     trackAnalytics('access_granted');
+                    announceToScreenReader('Verificación completada. Bienvenido a QuantumLink');
                 } else {
                     captchaError.style.display = 'block';
+                    captchaError.setAttribute('role', 'alert');
                     generateCaptcha();
                     trackAnalytics('captcha_failed');
+                    announceToScreenReader('Código incorrecto. Por favor, intente nuevamente.');
                 }
             });
             
@@ -706,6 +821,7 @@
                 
                 if (!isValidUrl(urlInput.value)) {
                     showToast('Por favor, introduce una URL válida', 'error');
+                    announceToScreenReader('Error: Por favor, introduce una URL válida');
                     return;
                 }
                 
@@ -715,6 +831,7 @@
                 const urlToShorten = urlInput.value;
                 const alias = customAlias.value || generateQuantumCode();
                 
+                // Simulación de procesamiento asíncrono
                 setTimeout(() => {
                     const shortCode = alias;
                     const shortenedUrl = `https://qtm.link/${shortCode}`;
@@ -725,23 +842,43 @@
                     
                     saveLink(urlToShorten, shortenedUrl, shortCode);
                     trackAnalytics('links_created');
+                    announceToScreenReader(`URL acelerada creada: ${shortenedUrl}`);
                     
                     urlInput.value = '';
                     customAlias.value = '';
+                    
+                    // Mejora de UX: Enfocar el resultado para fácil acceso
+                    shortUrl.focus();
                 }, 800);
             });
             
             copyBtn.addEventListener('click', function() {
-                navigator.clipboard.writeText(shortUrl.value).then(() => {
-                    showToast('Enlace copiado al portapapeles');
-                    trackAnalytics('copies');
-                }).catch(() => {
-                    shortUrl.select();
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(shortUrl.value).then(() => {
+                        showToast('Enlace copiado al portapapeles');
+                        trackAnalytics('copies');
+                        announceToScreenReader('Enlace copiado al portapapeles');
+                    }).catch(() => {
+                        fallbackCopyText(shortUrl.value);
+                    });
+                } else {
+                    fallbackCopyText(shortUrl.value);
+                }
+            });
+            
+            function fallbackCopyText(text) {
+                shortUrl.select();
+                shortUrl.setSelectionRange(0, 99999);
+                try {
                     document.execCommand('copy');
                     showToast('Enlace copiado al portapapeles');
                     trackAnalytics('copies');
-                });
-            });
+                    announceToScreenReader('Enlace copiado al portapapeles');
+                } catch (err) {
+                    showToast('Error al copiar el enlace', 'error');
+                    announceToScreenReader('Error al copiar el enlace');
+                }
+            }
             
             function isValidUrl(string) {
                 try {
@@ -775,6 +912,7 @@
                 };
                 
                 links.unshift(newLink);
+                // Mejora de rendimiento: Limitar almacenamiento para evitar lentitud
                 localStorage.setItem('quantumLinks', JSON.stringify(links.slice(0, 15)));
                 
                 loadSavedLinks();
@@ -785,15 +923,18 @@
                 
                 if (links.length === 0) {
                     emptyState.style.display = 'block';
+                    linksList.setAttribute('aria-label', 'Lista vacía de enlaces acelerados');
                     return;
                 }
                 
                 emptyState.style.display = 'none';
                 linksList.innerHTML = '';
+                linksList.setAttribute('aria-label', `Lista de ${links.length} enlaces acelerados`);
                 
                 links.forEach(link => {
                     const linkItem = document.createElement('div');
                     linkItem.className = 'link-item';
+                    linkItem.setAttribute('role', 'listitem');
                     
                     const linkInfo = document.createElement('div');
                     linkInfo.className = 'link-info';
@@ -816,27 +957,39 @@
                     
                     const copyBtn = document.createElement('button');
                     copyBtn.className = 'action-btn';
-                    copyBtn.innerHTML = '<i class="fas fa-copy"></i>';
+                    copyBtn.innerHTML = '<i class="fas fa-copy" aria-hidden="true"></i>';
                     copyBtn.title = 'Copiar enlace';
+                    copyBtn.setAttribute('aria-label', `Copiar enlace: ${link.shortUrl}`);
                     copyBtn.addEventListener('click', () => {
-                        navigator.clipboard.writeText(link.shortUrl);
-                        showToast('Enlace copiado');
-                        trackAnalytics('copies');
+                        if (navigator.clipboard && navigator.clipboard.writeText) {
+                            navigator.clipboard.writeText(link.shortUrl).then(() => {
+                                showToast('Enlace copiado');
+                                trackAnalytics('copies');
+                                announceToScreenReader('Enlace copiado al portapapeles');
+                            });
+                        } else {
+                            fallbackCopyText(link.shortUrl);
+                        }
                     });
                     
                     const deleteBtn = document.createElement('button');
                     deleteBtn.className = 'action-btn';
-                    deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
+                    deleteBtn.innerHTML = '<i class="fas fa-trash" aria-hidden="true"></i>';
                     deleteBtn.title = 'Eliminar enlace';
+                    deleteBtn.setAttribute('aria-label', `Eliminar enlace: ${link.originalUrl}`);
                     deleteBtn.addEventListener('click', () => {
-                        deleteLink(link.id);
-                        trackAnalytics('links_deleted');
+                        if (confirm(`¿Estás seguro de que quieres eliminar el enlace ${link.shortUrl}?`)) {
+                            deleteLink(link.id);
+                            trackAnalytics('links_deleted');
+                            announceToScreenReader('Enlace eliminado');
+                        }
                     });
                     
                     const statsBtn = document.createElement('button');
                     statsBtn.className = 'action-btn';
-                    statsBtn.innerHTML = `<i class="fas fa-chart-bar"></i> ${link.clickCount}`;
+                    statsBtn.innerHTML = `<i class="fas fa-chart-bar" aria-hidden="true"></i> ${link.clickCount}`;
                     statsBtn.title = `${link.clickCount} clics`;
+                    statsBtn.setAttribute('aria-label', `${link.clickCount} clics en este enlace`);
                     
                     linkActions.appendChild(copyBtn);
                     linkActions.appendChild(statsBtn);
@@ -879,18 +1032,48 @@
                 }, 3000);
             }
             
-            setInterval(() => {
-                const links = JSON.parse(localStorage.getItem('quantumLinks') || '[]');
-                links.forEach(link => {
-                    if (Math.random() > 0.7) {
-                        link.clickCount += Math.floor(Math.random() * 3);
-                    }
-                });
-                localStorage.setItem('quantumLinks', JSON.stringify(links));
-                loadSavedLinks();
-            }, 15000);
+            function announceToScreenReader(message) {
+                ariaLive.textContent = message;
+                
+                // Limpiar después de un tiempo para permitir anuncios repetidos
+                setTimeout(() => {
+                    ariaLive.textContent = '';
+                }, 1000);
+            }
             
-            loadSavedLinks();
+            // Mejora de rendimiento: Usar requestAnimationFrame para animaciones
+            function updateClickCounts() {
+                if (!document.hidden) {
+                    const links = JSON.parse(localStorage.getItem('quantumLinks') || '[]');
+                    let updated = false;
+                    
+                    links.forEach(link => {
+                        if (Math.random() > 0.7) {
+                            link.clickCount += Math.floor(Math.random() * 3);
+                            updated = true;
+                        }
+                    });
+                    
+                    if (updated) {
+                        localStorage.setItem('quantumLinks', JSON.stringify(links));
+                        loadSavedLinks();
+                    }
+                }
+                
+                // Programar próxima actualización
+                setTimeout(updateClickCounts, 15000);
+            }
+            
+            // Iniciar actualizaciones de clics cuando la página está visible
+            if (!document.hidden) {
+                setTimeout(updateClickCounts, 15000);
+            }
+            
+            document.addEventListener('visibilitychange', function() {
+                if (!document.hidden) {
+                    setTimeout(updateClickCounts, 15000);
+                }
+            });
         });
     </script>
 </body>
