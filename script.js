@@ -2,12 +2,6 @@ const ALLOWED_PREMIUM_NUMBERS = [
     '+53 50369270',
     '+34 601 234 567',
     '+34 602 345 678',
-    '+34 603 456 789',
-    '+34 604 567 890',
-    '+34 605 678 901',
-    '+34 606 789 012',
-    '+34 607 890 123',
-    '+34 608 901 234',
     '+34 609 012 345'
 ];
 
@@ -21,69 +15,6 @@ let userPhone = '';
 let dailyLinks = { count: 0, date: '' };
 
 const elements = {};
-
-const TEXT_CONTENT = {
-    titles: {
-        app: 'TumLinks - Acelerador de URLs Profesional',
-        free: 'TumLinks - Plan Básico',
-        premium: 'TumLinks - Plan Premium',
-        modal: 'Selecciona tu Plan TumLinks',
-        premiumModal: 'Activación Plan Premium'
-    },
-    messages: {
-        welcome: 'Bienvenido a TumLinks',
-        accessGranted: 'Acceso concedido correctamente',
-        captchaFailed: 'Código de verificación incorrecto',
-        linkCreated: 'Enlace acelerado creado exitosamente',
-        linkCopied: 'Enlace copiado al portapapeles',
-        linkDeleted: 'Enlace eliminado correctamente',
-        premiumActivated: '¡Plan Premium activado con éxito!',
-        dailyLimitReached: 'Límite diario alcanzado. Actualiza para enlaces ilimitados',
-        invalidUrl: 'Por favor, introduce una URL válida',
-        invalidPhone: 'Número no autorizado para Plan Premium',
-        processing: 'Procesando solicitud...',
-        optimizing: 'Optimizando enlace...',
-        verificationSuccess: 'Verificación de seguridad completada',
-        qrGenerated: 'Código QR premium generado',
-        downloadReady: 'Archivo listo para descargar'
-    },
-    labels: {
-        urlInput: 'URL para acelerar',
-        customAlias: 'Alias personalizado',
-        generateQR: 'Generar código QR avanzado',
-        phoneInput: 'Número de teléfono autorizado',
-        captchaInput: 'Código de verificación de seguridad'
-    },
-    buttons: {
-        continue: 'Continuar',
-        refresh: 'Regenerar Código',
-        verify: 'Verificar y Continuar',
-        shorten: 'Acelerar URL',
-        shortenPremium: 'Acelerar URL Premium',
-        copy: 'Copiar',
-        cancel: 'Volver',
-        activate: 'Activar Premium',
-        upgrade: 'Actualizar a Premium',
-        delete: 'Eliminar',
-        download: 'Descargar QR',
-        share: 'Compartir',
-        switchMode: 'Cambiar Plan'
-    },
-    badges: {
-        free: 'PLAN BÁSICO',
-        premium: 'PLAN PREMIUM',
-        active: 'ACTIVA'
-    },
-    features: {
-        unlimited: 'Enlaces ilimitados',
-        qrCodes: 'Códigos QR avanzados',
-        customization: 'Personalización completa',
-        analytics: 'Analytics en tiempo real',
-        priority: 'Soporte prioritario 24/7',
-        speed: 'Máxima velocidad',
-        security: 'Seguridad avanzada'
-    }
-};
 
 class TumLinksApp {
     constructor() {
@@ -122,7 +53,6 @@ class TumLinksApp {
         elements.resultContainerFree = document.getElementById('result-container-free');
         elements.shortUrlFree = document.getElementById('short-url-free');
         elements.copyBtnFree = document.getElementById('copy-btn-free');
-        elements.limitCounter = document.getElementById('limitCounter');
         elements.linksTodaySpan = document.getElementById('linksToday');
         elements.progressFill = document.getElementById('progressFill');
         elements.upgradeToPremium = document.getElementById('upgradeToPremium');
@@ -187,8 +117,6 @@ class TumLinksApp {
         
         elements.downloadQR.addEventListener('click', () => this.downloadQRCode());
         elements.shareQR.addEventListener('click', () => this.shareQRCode());
-        
-        document.addEventListener('visibilitychange', () => this.visibilityChangeHandler());
     }
 
     showModeModal() {
@@ -204,7 +132,7 @@ class TumLinksApp {
             elements.premiumModeSelect.classList.remove('active');
         }
         
-        this.updateDocumentTitle(TEXT_CONTENT.titles.modal);
+        document.title = 'TumLinks - Seleccionar Plan';
     }
 
     hideAllContainers() {
@@ -249,14 +177,14 @@ class TumLinksApp {
             }
             
             this.trackAnalytics('access_granted');
-            this.showToast(TEXT_CONTENT.messages.verificationSuccess, 'success');
-            this.announceToScreenReader(TEXT_CONTENT.messages.accessGranted);
+            this.showToast('Verificación completada con éxito', 'success');
+            this.announceToScreenReader('Acceso concedido correctamente');
         } else {
             elements.captchaError.style.display = 'flex';
             elements.captchaError.setAttribute('role', 'alert');
             this.generateCaptcha();
             this.trackAnalytics('captcha_failed');
-            this.announceToScreenReader(TEXT_CONTENT.messages.captchaFailed);
+            this.announceToScreenReader('Código de verificación incorrecto');
         }
     }
 
@@ -267,19 +195,19 @@ class TumLinksApp {
     }
 
     showFreeInterface() {
-        this.updateDocumentTitle(TEXT_CONTENT.titles.free);
+        document.title = 'TumLinks - Plan Básico';
         elements.freeContainer.style.display = 'block';
         this.checkDailyLimit();
         this.updateDailyCounter();
-        this.announceToScreenReader(TEXT_CONTENT.messages.welcome + ' - Plan Básico');
+        this.announceToScreenReader('Bienvenido al Plan Básico de TumLinks');
     }
 
     showPremiumInterface() {
-        this.updateDocumentTitle(TEXT_CONTENT.titles.premium);
+        document.title = 'TumLinks - Plan Premium';
         elements.premiumContainer.style.display = 'block';
         this.loadSavedLinks();
         this.updateAnalyticsSummary();
-        this.announceToScreenReader(TEXT_CONTENT.messages.welcome + ' - Plan Premium');
+        this.announceToScreenReader('Bienvenido al Plan Premium de TumLinks');
     }
 
     isPremiumNumber(phone) {
@@ -289,7 +217,7 @@ class TumLinksApp {
     showPremiumModal() {
         elements.premiumModal.style.display = 'flex';
         elements.phoneInput.focus();
-        this.updateDocumentTitle(TEXT_CONTENT.titles.premiumModal);
+        document.title = 'TumLinks - Activación Premium';
     }
 
     cancelPremiumHandler() {
@@ -306,8 +234,8 @@ class TumLinksApp {
         }
         
         if (!this.isPremiumNumber(phone)) {
-            this.showToast(TEXT_CONTENT.messages.invalidPhone, 'error');
-            this.announceToScreenReader(TEXT_CONTENT.messages.invalidPhone);
+            this.showToast('Número no autorizado para Plan Premium', 'error');
+            this.announceToScreenReader('Número no autorizado');
             return;
         }
         
@@ -315,25 +243,25 @@ class TumLinksApp {
         localStorage.setItem('tumlinks_phone', phone);
         elements.premiumModal.style.display = 'none';
         this.showPremiumInterface();
-        this.showToast(TEXT_CONTENT.messages.premiumActivated, 'premium');
+        this.showToast('¡Plan Premium activado con éxito!', 'success');
         this.trackAnalytics('premium_activated');
-        this.announceToScreenReader(TEXT_CONTENT.messages.premiumActivated);
+        this.announceToScreenReader('Plan Premium activado correctamente');
     }
 
     shortenFormHandler(e, mode) {
         e.preventDefault();
         
         if (mode === 'free' && !this.canCreateLink()) {
-            this.showToast(TEXT_CONTENT.messages.dailyLimitReached, 'error');
-            this.announceToScreenReader(TEXT_CONTENT.messages.dailyLimitReached);
+            this.showToast('Límite diario alcanzado. Actualiza para enlaces ilimitados', 'error');
+            this.announceToScreenReader('Límite diario alcanzado');
             return;
         }
         
         const urlInput = mode === 'free' ? elements.urlInputFree : elements.urlInputPremium;
         
         if (!this.isValidUrl(urlInput.value)) {
-            this.showToast(TEXT_CONTENT.messages.invalidUrl, 'error');
-            this.announceToScreenReader(TEXT_CONTENT.messages.invalidUrl);
+            this.showToast('Por favor, introduce una URL válida', 'error');
+            this.announceToScreenReader('URL inválida');
             return;
         }
         
@@ -356,8 +284,8 @@ class TumLinksApp {
             }
             
             this.trackAnalytics('links_created');
-            this.showToast(TEXT_CONTENT.messages.linkCreated, 'success');
-            this.announceToScreenReader(TEXT_CONTENT.messages.linkCreated + ': ' + shortenedUrl);
+            this.showToast('Enlace acelerado creado exitosamente', 'success');
+            this.announceToScreenReader('Enlace creado: ' + shortenedUrl);
             
             this.resetForm(mode);
         }, 1500);
@@ -369,11 +297,9 @@ class TumLinksApp {
         
         if (show) {
             loading.style.display = 'block';
-            submitBtn.classList.add('loading');
             submitBtn.disabled = true;
         } else {
             loading.style.display = 'none';
-            submitBtn.classList.remove('loading');
             submitBtn.disabled = false;
         }
     }
@@ -412,9 +338,9 @@ class TumLinksApp {
         
         if (navigator.clipboard && navigator.clipboard.writeText) {
             navigator.clipboard.writeText(shortUrl.value).then(() => {
-                this.showToast(TEXT_CONTENT.messages.linkCopied);
+                this.showToast('Enlace copiado al portapapeles');
                 this.trackAnalytics('copies');
-                this.announceToScreenReader(TEXT_CONTENT.messages.linkCopied);
+                this.announceToScreenReader('Enlace copiado');
             }).catch(() => {
                 this.fallbackCopyText(shortUrl.value);
             });
@@ -471,31 +397,13 @@ class TumLinksApp {
         
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         
-        const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-        gradient.addColorStop(0, '#6366f1');
-        gradient.addColorStop(0.5, '#8b5cf6');
-        gradient.addColorStop(1, '#ec4899');
-        
-        ctx.fillStyle = '#1e293b';
+        ctx.fillStyle = '#ffffff';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
-        ctx.fillStyle = gradient;
-        const size = 8;
-        const padding = 30;
-        
-        for (let i = 0; i < 11; i++) {
-            for (let j = 0; j < 11; j++) {
-                if ((i < 2 || i > 8 || j < 2 || j > 8) || 
-                    (i === 3 && j === 3) || (i === 7 && j === 7)) {
-                    ctx.fillRect(padding + i * size, padding + j * size, size, size);
-                }
-            }
-        }
-        
-        ctx.fillStyle = '#8a94b0';
-        ctx.font = 'bold 10px Inter, sans-serif';
+        ctx.fillStyle = '#000000';
+        ctx.font = '12px Arial';
         ctx.textAlign = 'center';
-        ctx.fillText('TumLinks Premium', canvas.width / 2, canvas.height - 10);
+        ctx.fillText('TumLinks QR', canvas.width / 2, canvas.height - 10);
     }
 
     downloadQRCode() {
@@ -504,12 +412,12 @@ class TumLinksApp {
         link.download = 'tumlinks-qr-code.png';
         link.href = canvas.toDataURL('image/png');
         link.click();
-        this.showToast(TEXT_CONTENT.messages.downloadReady, 'info');
+        this.showToast('Archivo listo para descargar', 'info');
     }
 
     shareQRCode() {
         if (navigator.share) {
-            canvas.toBlob(blob => {
+            elements.qrCanvas.toBlob(blob => {
                 const file = new File([blob], 'tumlinks-qr-code.png', { type: 'image/png' });
                 navigator.share({
                     files: [file],
@@ -584,11 +492,11 @@ class TumLinksApp {
                 ${link.clickCount} clics
             </div>
             <div class="link-actions">
-                <button class="action-btn copy-link" title="${TEXT_CONTENT.buttons.copy}" aria-label="${TEXT_CONTENT.buttons.copy} enlace: ${link.shortUrl}">
+                <button class="action-btn copy-link" title="Copiar enlace" aria-label="Copiar enlace: ${link.shortUrl}">
                     <i class="fas fa-copy"></i>
                     Copiar
                 </button>
-                <button class="action-btn delete-link" title="${TEXT_CONTENT.buttons.delete}" aria-label="${TEXT_CONTENT.buttons.delete} enlace: ${link.originalUrl}">
+                <button class="action-btn delete-link" title="Eliminar enlace" aria-label="Eliminar enlace: ${link.originalUrl}">
                     <i class="fas fa-trash"></i>
                     Eliminar
                 </button>
@@ -598,9 +506,9 @@ class TumLinksApp {
         linkItem.querySelector('.copy-link').addEventListener('click', () => {
             if (navigator.clipboard && navigator.clipboard.writeText) {
                 navigator.clipboard.writeText(link.shortUrl).then(() => {
-                    this.showToast(TEXT_CONTENT.messages.linkCopied);
+                    this.showToast('Enlace copiado al portapapeles');
                     this.trackAnalytics('copies');
-                    this.announceToScreenReader(TEXT_CONTENT.messages.linkCopied);
+                    this.announceToScreenReader('Enlace copiado');
                 });
             } else {
                 this.fallbackCopyText(link.shortUrl);
@@ -611,8 +519,8 @@ class TumLinksApp {
             if (confirm(`¿Estás seguro de que quieres eliminar el enlace ${link.shortUrl}?`)) {
                 this.deleteLink(link.id);
                 this.trackAnalytics('links_deleted');
-                this.showToast(TEXT_CONTENT.messages.linkDeleted, 'info');
-                this.announceToScreenReader(TEXT_CONTENT.messages.linkDeleted);
+                this.showToast('Enlace eliminado correctamente', 'info');
+                this.announceToScreenReader('Enlace eliminado');
             }
         });
         
@@ -646,9 +554,9 @@ class TumLinksApp {
         
         try {
             document.execCommand('copy');
-            this.showToast(TEXT_CONTENT.messages.linkCopied);
+            this.showToast('Enlace copiado al portapapeles');
             this.trackAnalytics('copies');
-            this.announceToScreenReader(TEXT_CONTENT.messages.linkCopied);
+            this.announceToScreenReader('Enlace copiado');
         } catch (err) {
             this.showToast('Error al copiar el enlace', 'error');
             this.announceToScreenReader('Error al copiar el enlace');
@@ -666,20 +574,11 @@ class TumLinksApp {
 
     showToast(message, type = 'success') {
         elements.toast.textContent = message;
-        elements.toast.className = `toast ${type}`;
-        
-        const typeConfig = {
-            success: { background: 'var(--success-gradient)', icon: '✓' },
-            error: { background: 'var(--accent-error)', icon: '!' },
-            info: { background: 'var(--accent-info)', icon: 'i' },
-            premium: { background: 'var(--premium-gradient)', icon: '👑' }
-        };
-        
-        elements.toast.classList.add('show');
+        elements.toast.className = `toast ${type} show`;
         
         setTimeout(() => {
             elements.toast.classList.remove('show');
-        }, 4000);
+        }, 3000);
     }
 
     announceToScreenReader(message) {
@@ -688,48 +587,6 @@ class TumLinksApp {
             elements.ariaLive.textContent = '';
         }, 1000);
     }
-
-    updateDocumentTitle(title) {
-        document.title = title;
-    }
-
-    visibilityChangeHandler() {
-        if (!document.hidden && currentMode === 'premium') {
-            setTimeout(() => this.autoUpdateClickCounts(), 15000);
-        }
-    }
-
-    autoUpdateClickCounts() {
-        if (!document.hidden && currentMode === 'premium') {
-            const links = JSON.parse(localStorage.getItem('tumlinks') || '[]');
-            let updated = false;
-            
-            links.forEach(link => {
-                if (Math.random() > 0.7 && link.mode === 'premium') {
-                    link.clickCount += Math.floor(Math.random() * 5);
-                    link.lastAccessed = new Date().toISOString();
-                    updated = true;
-                }
-            });
-            
-            if (updated) {
-                localStorage.setItem('tumlinks', JSON.stringify(links));
-                this.loadSavedLinks();
-                this.updateAnalyticsSummary();
-            }
-        }
-        
-        setTimeout(() => this.autoUpdateClickCounts(), 20000);
-    }
 }
 
 new TumLinksApp();
-
-if (!document.hidden) {
-    setTimeout(() => {
-        const app = new TumLinksApp();
-        if (currentMode === 'premium') {
-            app.autoUpdateClickCounts();
-        }
-    }, 15000);
-}
